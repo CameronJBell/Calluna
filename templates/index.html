@@ -1,5 +1,36 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    
+<!-- Search bar -->
+{% if request.cookies.auth %}
+<!-- Cards: User pinned locations -->
+{% else %}
+<!-- Table: Large cities current weather -->
+<section id="weather-largest-cities-container">
+    <h2>Weather in Top Cities</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>Condition</th>
+                <th>Temperature</th>
+                <th>Wind</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for weather in weather_data %}
+            <tr>
+                <td>{{ weather.city }}</td>
+                <td>
+                    <img src={{ weather.condition.icon }} width="48"
+                    alt={{ weather.condition.text }}> {{ weather.condition.text }}
+                </td>
+                <td>{{ weather.temperature }}&#x2103</td>
+                <td>{{ weather.wind.direction }} {{ weather.wind.speed }}mph</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endif %}
 {% endblock %}

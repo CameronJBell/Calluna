@@ -1,0 +1,64 @@
+:root {
+    --light-color: #F9EBE0;
+    --dark-color: #222222;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--light-color);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 4rem;
+    width: 100%;
+    margin-top: 0;
+    background-color: var(--dark-color);
+}
+
+header img {
+    height: 80%;
+    margin-left: 1rem;
+}
+
+header ul {
+    list-style-type: none;
+}
+
+header ul li {
+    display: inline;
+    margin: 0 0.3rem;
+    padding: 1rem;
+    text-align: center;
+    background-color: var(--light-color);
+}
+
+header ul li a {
+    text-decoration: none;
+    color: var(--dark-color);
+}
+
+#weather-largest-cities-container {
+    margin-top: 3rem;
+    margin-left: 3rem;
+}
+
+#weather-largest-cities-container table {
+    background-color: rgba(34,34,34,0.15);
+}
+
+#weather-largest-cities-container table tr td {
+    vertical-align: middle;
+    text-align: center;
+    padding: 0 2rem;
+}
+
+#weather-largest-cities-container table tr td img {
+    vertical-align: middle;
+}
