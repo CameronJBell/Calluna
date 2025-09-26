@@ -1,8 +1,13 @@
 from flask import Flask, render_template, redirect, request, jsonify
 from dotenv import load_dotenv
+import base64
+import bleach
 import os
 import requests
+import matplotlib.pyplot as plt
+import pandas
 from supabase import create_client
+from io import BytesIO
 
 load_dotenv()
 app = Flask(__name__)
@@ -34,7 +39,6 @@ def get_city_coordinates(city):
             return 35.6828387, 139.7594549
         case _:
             # Get coordinates from API
-            #query = f"{owm_geo_url}?q={city}&limit=1&appid={owm_key}"
             params = {
                     "q": city,
                     "limit": 1,
@@ -46,14 +50,12 @@ def get_city_coordinates(city):
 
 def get_current_weather_data(lat, long):
     # Fetch from API
-    #query = f"{weatherapi_url}/current.json?q={lat},{long}&key={weatherapi_key}"
     params = {
             "q": f"{lat},{long}",
             "key": weatherapi_key
             }
     res = requests.get(weatherapi_url + "/current.json", params=params).json()
 
-    """
     weather = {
             "city": res["location"]["name"],
             "temperature": res["current"]["temp_c"],
@@ -66,20 +68,41 @@ def get_current_weather_data(lat, long):
                 "icon": "https://" + str(res["current"]["condition"]["icon"])
                 }
             }
-    """
-    weather = {
-            "city": "London",
-            "temperature": 17.9,
-            "wind": {
-                "speed": 6.7,
-                "direction": "ESE"
-                },
-            "condition": {
-                "text": "Sunny",
-                "icon": "https:" + "//cdn.weatherapi.com/weather/64x64/day/116.png"
-                }
-            }
     return weather
+
+def get_forecast(lat, long):
+    params = {
+            "q": f"{lat},{long}",
+            "days": 7,
+            "key": weatherapi_key
+            }
+    return requests.get(weatherapi_url + "/forecast.json", params=params).json()
+
+def create_forecast_charts(weather_data):
+    weather_charts = {}
+    # Daily Forecast
+    dates = []
+    daily_temps = []
+    daily_chance_rain = []
+    for data in weather_data["forecast"]["forecastday"]:
+        dates.append(data["date"])
+        daily_temps.append(data["day"]["avgtemp_c"])
+        daily_chance_rain.append(data["day"]["daily_chance_of_rain"])
+
+    plot_data = pandas.DataFrame({"Date": dates, "Avg Temp": daily_temps, "Rain": daily_chance_rain})
+
+    ax = plot_data.plot.bar(x="Date", y="Avg Temp", ylabel=u"Temperature (\u2103)", xlabel="Date", color="red")
+    ax2 = ax.twinx()
+    plot_data.plot(x="Date", y="Rain", marker="o", color="blue", ylabel="Chance of rain (%)", ax=ax2)
+    ax.legend(loc="upper left")
+    ax2.legend(loc="upper right")
+    buf = BytesIO()
+    ax2.figure.autofmt_xdate()
+    ax2.figure.savefig(buf, format="png")
+    daily_forecast_plot_data = base64.b64encode(buf.getbuffer()).decode("ascii")
+    
+    weather_charts.update({"daily_forecast": daily_forecast_plot_data})
+    return weather_charts
 
 @app.route("/")
 def index():
@@ -116,6 +139,31 @@ def login():
 def logout():
     # TODO: Logout code
     return redirect("/")
+
+
+@app.route("/search", methods=["POST"])
+def search():
+    search = bleach.clean(request.form["search"])
+    params = {
+            "q": search,
+            "limit": 10,
+            "appid": owm_key
+            }
+    if search: # Don't send API request for empty search
+        search_data = requests.get(owm_geo_url, params=params).json()
+
+    return render_template("search.html", search_data=search_data)
+
+@app.route("/weather", methods=["GET"])
+def display_weather():
+    lat = bleach.clean(request.args.get("lat"))
+    long = bleach.clean(request.args.get("long"))
+
+    weather_data = get_forecast(lat, long)
+    weather_charts = create_forecast_charts(weather_data)
+
+    return render_template("weather.html", weather_data=weather_data,
+                           weather_charts=weather_charts)
 
 if __name__ == "__main__":
     app.run(debug=True)

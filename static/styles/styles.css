@@ -1,6 +1,7 @@
 :root {
-    --light-color: #F9EBE0;
+    --light-color: #E7ECEF;
     --dark-color: #222222;
+    --dark-color-alpha: rgba(34,34,34,0.15);
 }
 
 * {
@@ -10,6 +11,11 @@
 
 body {
     background-color: var(--light-color);
+}
+
+#body-width {
+    margin: auto;
+    padding: 3rem;
 }
 
 header {
@@ -22,8 +28,8 @@ header {
     background-color: var(--dark-color);
 }
 
+
 header img {
-    height: 80%;
     margin-left: 1rem;
 }
 
@@ -42,23 +48,137 @@ header ul li {
 header ul li a {
     text-decoration: none;
     color: var(--dark-color);
+    padding: 0;
 }
 
-#weather-largest-cities-container {
-    margin-top: 3rem;
-    margin-left: 3rem;
+.search-container input {
+    border: none;
+    background-color: var(--dark-color-alpha);
+    padding: 0.5rem;
+    box-shadow: 0.2rem 0.2rem 0.1rem var(--dark-color-alpha);
 }
 
-#weather-largest-cities-container table {
-    background-color: rgba(34,34,34,0.15);
+.search-container button {
+    border: none;
+    background-color: var(--dark-color-alpha);
+    padding: 0.5rem;
+    box-shadow: 0.2rem 0.2rem 0.1rem var(--dark-color-alpha);
 }
 
-#weather-largest-cities-container table tr td {
+.table-container {
+    overflow-x: auto;
+}
+
+.table-container table {
+    white-space: nowrap;
+}
+
+#weather-largest-cities-container table, #forecast-container table,
+#current-weather-container table {
+    background-color: var(--dark-color-alpha);
+    padding-top: 1rem;
+}
+
+#weather-largest-cities-container table tr td, #forecast-container table tr td,
+#current-weather-container table tr td {
     vertical-align: middle;
     text-align: center;
     padding: 0 2rem;
 }
 
-#weather-largest-cities-container table tr td img {
+#weather-largest-cities-container table tr td img, #forecast-container table tr td img,
+#current-weather-container table tr td img {
     vertical-align: middle;
+}
+
+#search-results-container ul {
+    list-style: none;
+}
+
+#search-results-container ul li::before {
+    content: ">";
+    padding-right: 0.5rem;
+}
+
+#weather-alert-container div {
+    background-color: #F09993;
+}
+
+@media only screen and (max-width: 480px) {
+    header img {
+        height: 40%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+#burger-menu {
+    display: block;
+    font-size: 2rem;
+    padding: 0.1rem 0.7rem;
+    margin-right: 1rem;
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    text-decoration: none;
+}
+
+header {
+    height: 4rem;
+}
+
+header img {
+    height: 60%;
+}
+
+header ul li {
+    padding: 0.5rem;
+}
+
+#weather-largest-cities-container, #forecast-container, #current-weather-container {
+    margin-top: 1rem;
+}
+}
+
+@media only screen and (min-width: 601px) {
+header img {
+    height: 80%;
+    width: auto;
+}
+
+#burger-menu {
+    display: none;
+}
+
+#weather-largest-cities-container, #forecast-container, #current-weather-container {
+    margin-top: 1.5rem;
+}
+}
+
+@media only screen and (min-width: 1280px) {
+#body-width {
+    width: 60%;
+}
+
+.search-container {
+    margin-top: 3rem;
+}
+
+#weather-largest-cities-container, #forecast-container, #current-weather-container {
+    margin-top: 3rem;
+}
+
+#search-results-container {
+    margin-top: 3rem;
+}
+
+#search-results-container ul li {
+    margin: 0.8rem 0;
+}
+
+#weather-heading {
+    margin-top: 3rem;
+}
+
+#weather-alert-container div {
+    margin: 0.5rem;
+}
 }

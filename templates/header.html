@@ -6,13 +6,13 @@
     <div id="header-button-container">
         <!-- If logged in -->
         {% if request.cookies.auth %}
-        <ul>
+        <ul id="nav-links">
             <li><a href="/settings">Account Settings</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>
         {% else %}
         <!-- If not logged in -->
-        <ul>
+        <ul id="nav-links">
             <li><a href="/login">Login</a></li>
             <li><a href="/signup">Sign Up</a></li>
         </ul>

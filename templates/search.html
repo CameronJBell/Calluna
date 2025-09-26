@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section id="search-results-container">
+    <h2>Locations</h2>
+    {% if search_data %}
+    <ul>
+        {% for result in search_data %}
+        <li><a href="{{ '/weather?lat=' ~ result.lat ~ '&long=' ~ result.lon }}">
+                {{ result.name }}, {{ result.state }}, {{ result.country }}
+            </a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No locations found.</p>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% include "search-bar.html" %}
+<h2 id="weather-heading">{{ weather_data.location.name}}, {{ weather_data.location.country }}</h2>
+{% if "alerts" in weather_data %}
+<section id="weather-alert-container">
+    {% for alert in weather_data.alerts.alert %}
+    <div>
+        <h3>&#26A0; {{ alert.severity }} Weather Alert</h3>
+        <p>{{ alert.headline }}</p><br/>
+        <p>Affected areas: {{ alert.areas }}</p><br/><br/>
+        <p>{{ alert.desc }}</p>
+    </div>
+    {% endfor %}
+</section>
+{% endif %}
+<section id="current-weather-container">
+    <h3>Current Weather</h3>
+    <div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Condition</th>
+                <th>Temperature</th>
+                <th>Wind</th>
+                <th>Humidity</th>
+                <th>Pressure</th>
+                <th>UV Index</th>
+                <th>Dew point</th>
+                <th>Visibility</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <img src={{ 'https:' ~ weather_data.current.condition.icon }} width="48"
+                    alt={{ weather_data.current.condition.text }}>
+                    {{ weather_data.current.condition.text }}
+                </td>
+                <td>{{ weather_data.current.temp_c }}&#x2103
+                    (feels like {{ weather_data.current.feelslike_c }}&#x2103)</td>
+                <td>{{ weather_data.current.wind_dir }} {{ weather_data.current.wind_mph }}mph
+                    (gusts of {{ weather_data.current.gust_mph }}mph)</td>
+                <td>{{ weather_data.current.humidity }}%</td>
+                <td>{{ weather_data.current.pressure_mb }}mb</td>
+                <td>{{ weather_data.current.uv }}</td>
+                <td>{{ weather_data.current.dewpoint_c }}&#x2103</td>
+                <td>{{ weather_data.current.vis_miles }}mi</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</section>
+<section id="forecast-container">
+    <h3>Forecast</h3>
+    <img src={{ "data:image/png;base64," ~ weather_charts.daily_forecast }}>
+    <div class="table-container">
+    <table>
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Condition</th>
+            <th>Min Temp</th>
+            <th>Avg Temp</th>
+            <th>Max Temp</th>
+            <th>Precipitation</th>
+            <th>Humidity</th>
+            <th>Wind</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for day in weather_data.forecast.forecastday %}
+            <tr>
+                <td>{{ day.date }}</td>
+                <td><img src={{ 'https:' ~ day.day.condition.icon }} width="48"
+                    alt={{ day.day.condition.text }}> {{ day.day.condition.text }}</td>
+                <td>{{ day.day.mintemp_c }}&#x2103;</td>
+                <td>{{ day.day.avgtemp_c }}&#x2103;</td>
+                <td>{{ day.day.maxtemp_c }}&#x2103;</td>
+                <td>{{ day.day.daily_chance_of_rain }}%</td>
+                <td>{{ day.day.avghumidity }}%</td>
+                <td>{{ day.day.maxwind_mph }}mph</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</section>
+{% endblock %}

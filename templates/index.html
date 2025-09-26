@@ -2,12 +2,14 @@
 
 {% block content %}
 <!-- Search bar -->
+{% include "search-bar.html" %}
 {% if request.cookies.auth %}
 <!-- Cards: User pinned locations -->
 {% else %}
 <!-- Table: Large cities current weather -->
 <section id="weather-largest-cities-container">
     <h2>Weather in Top Cities</h2>
+    <div class="table-container">
     <table>
         <thead>
             <tr>
@@ -31,6 +33,7 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 </section>
 {% endif %}
 {% endblock %}
