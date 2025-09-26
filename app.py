@@ -138,7 +138,7 @@ def signup():
         elif not "@" in email:
             return render_template("signup.html", error="Invalid email address")
 
-        response = supabase.auth.sign_up({
+        api_response= supabase.auth.sign_up({
             "email": email,
             "password": password,
             })
