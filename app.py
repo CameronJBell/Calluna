@@ -6,6 +6,7 @@ import os
 import requests
 import matplotlib.pyplot as plt
 import pandas
+import re
 from supabase import create_client
 from io import BytesIO
 
@@ -124,14 +125,39 @@ def index():
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
-        # TODO: Create new user
-        return redirect("/login")
+        email = request.form["email"]
+        password = request.form["password"]
+        confirm_password = request.form["password-confirm"]
+        password_pattern = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,64}$")
+
+        if password != confirm_password:
+            return render_template("signup.html", error="Passwords do not match")
+        elif not re.search(password_pattern, password):
+            error_msg="Passwords must contain be at least 8 characters and contain at least 1 lowercase letter, 1 uppercase letter, and 1 number."
+            return render_template("signup.html", error=error_msg)
+        elif not "@" in email:
+            return render_template("signup.html", error="Invalid email address")
+
+        response = supabase.auth.sign_up({
+            "email": email,
+            "password": password,
+            })
+
+        return redirect("/")
     return render_template("signup.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        # TODO: Set auth code -- supabase?
+        email = request.form["email"]
+        password = request.form["password"]
+
+        if email and password:
+            response = supabase.auth.sign_in_with_password({
+                "email": email,
+                "password": password,
+                })
+
         return redirect("/")
     return render_template("login.html")
 

@@ -104,6 +104,10 @@ header ul li a {
     background-color: #F09993;
 }
 
+#signup-error-container {
+    background-color: #F09993;
+}
+
 @media only screen and (max-width: 480px) {
     header img {
         height: 40%;

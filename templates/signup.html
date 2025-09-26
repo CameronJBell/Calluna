@@ -2,16 +2,19 @@
 
 {% block content %}
    <h1>Sign Up</h1>
-   <form action="/login" method="POST">
-      <input placeholder="Username" type="text" name="username"
-          maxlength="60" autofocus required>
-      <br/>
+   {% if error %}
+   <div id="signup-eror-container">
+       <p>{{ error }}</p>
+   </div>
+   {% endif %}
+   <form action="/signup" method="POST">
       <input placeholder="Email" type="email" name="email" maxlength="400" required>
       <br/>
-      <input placeholder="Password" type="password" name="password" maxlength="255" required>
+      <input placeholder="Password" autocomplete="new-password"
+      type="password" name="password" maxlength="255" required>
       <br/>
-      <input placeholder="Confirm Password" type="password" name="password-confirm"
-          maxlength="255" required>
+      <input placeholder="Confirm Password" autocomplete="new-password"
+      type="password" name="password-confirm" maxlength="255" required>
       <br/>
       <input type="submit" value="Register">
    </form>
